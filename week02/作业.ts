@@ -50,7 +50,7 @@ function utf8encode(str: string) {
       if (value >= 0xDB00 && value <= 0xDBFF && count < len) {
         extra = s.charCodeAt(count++)
         if (extra >= 0xDC00 && extra <= 0xDFFF) {
-          
+          const h = Math.floor((0x1D306-0x10000)/0x400)+0xD800 
         }
       } else { // 4个字节
         res.push(value)
