@@ -28,37 +28,58 @@ function numberTest(testNum: string| number, bit?: 2 | 8 | 10 | 16) {
 }
 
 // 2. 写一个 UTF-8 Encoding 的函数
-// fromCharCode: 仅支持 bmp，超出会截取高位，如 0x0041 和 0x10041 都会输出 ‘A’
-// fromCodePoint：为了解决 fromCharCode 的问题，es6 新增了 fromCodePoint，可以打印超出 0xFFFF 的码点
-function utf8encode(str: string) {
+function utf8encode(str) {
   // usc-2 decode
-  function ucs2decode(s: string) {
+  function getCodePoints(s) {
     const res = []
     let count = 0;
-    const len = s.length;
-    let value: number | undefined;
-    let extra: number | undefined;
-    // 在bmp中，从U+D800到U+DFFF是一个空段，即这些码点不对应任何字符。因此，这个空段可以用来映射辅助平面的字符。
-    // 具体来说，辅助平面的字符位共有2^20个，也就是说，对应这些字符至少需要20个二进制位。
-    // UTF-16将这20位拆成两半
-    // 前10位映射在U+D800到U+DBFF（空间大小2^10），称为高位（H）
-    // 后10位映射在U+DC00到U+DFFF（空间大小2^10），称为低位（L）。
-    // 这意味着，一个辅助平面的字符，被拆成两个基本平面的字符表示。
-    while (count < len) {
-      value = s.charCodeAt(count)
-      // 高位
-      if (value >= 0xDB00 && value <= 0xDBFF && count < len) {
-        extra = s.charCodeAt(count++)
-        if (extra >= 0xDC00 && extra <= 0xDFFF) {
-          const h = Math.floor((0x1D306-0x10000)/0x400)+0xD800 
-        }
-      } else { // 4个字节
-        res.push(value)
-      }
+    while (count < s.length) {
+      res.push(s.codePointAt(count++))
     }
+    return res;
   }
-  // 获取码点
-  const codePoints = ucs2decode(str)
+  // 获取 unicode 码点
+  const codePoints = getCodePoints(str)
+  const tmp = [];
+  codePoints.forEach(point => {
+    const utf8Str = []
+    // ASCII 码直接转 16
+    if (point <= 0x7F) {
+      utf8Str.push(point.toString(16))
+    } else { // 大于 127
+      // 大端表示法表示码点
+      let obStr = point.toString(2)
+      let n = 0;
+
+      while (obStr.length > 6) {
+        // 获取最后6个
+        const current0b = obStr.slice(obStr.length - 6)
+        const pad10 = `10${current0b}`
+        utf8Str.unshift(pad10);
+        // 去掉最后六个长度
+        obStr = obStr.slice(0, obStr.length - 6)
+        n++;
+      }
+
+      // 补最高位
+      const padBits = (new Array(8)).fill(0)
+      for (let index = 0; index < n + 1; index++) {
+        padBits[index] = 1
+      }
+      for (let index = 0; index < obStr.length; index++) {
+        padBits[padBits.length - 1 - index] = obStr[obStr.length - 1 - index];
+      }
+
+      utf8Str.unshift(padBits.join(''))
+    }
+    const oxStrArr = utf8Str.map(us => {
+      const obNum = parseInt(us, 2)
+      const oxNum = obNum.toString(16)
+      return `\\x${oxNum}`
+    })
+    tmp.push(oxStrArr)
+  })
+  return tmp.reduce((prev, currv) => prev + currv.join(''), '')
 }
 
 // 3. 写一个正则表达式，匹配所有的字符串直接量，单引号和双引号
