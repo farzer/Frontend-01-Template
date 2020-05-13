@@ -51,6 +51,9 @@ ${this.bodyText}`
       connection.on('data', (data) => {
         parser.receive(data.toString())
         // resolve(data.toString())
+        if (parser.isFinished) {
+          resolve(parser.response)
+        }
         console.log(parser.statusLine)
         console.log(parser.headers)
         connection.end();
@@ -86,6 +89,20 @@ class ResponseParser {
     this.headers = {}
     this.headerName = ''
     this.headerValue = ''
+    this.bodyParser = null;
+  }
+
+  get isFinished() {
+    return this.bodyParser && this.bodyParser.isFinished
+  }
+  get response() {
+    this.statusLine.match(/HTTP\/1\.1 ([0-9]+) ([\s\S]+)/)
+    return {
+      statusCode: RegExp.$1,
+      statusText: RegExp.$2,
+      headers: this.headers
+      body: this.bodyParser.content.join('')
+    }
   }
   receive(str) {
     for (let index = 0; index < str.length; index++) {
@@ -96,9 +113,7 @@ class ResponseParser {
     if (this.current === this.WAITING_STATUS_LINE) {
       if (char === '\r') {
         this.current = this.WAITING_STATUS_LINE_END
-      } else if (char === '\n') {
-        this.current = this.WAITING_HEADER_NAME
-      } else {
+      }  else {
         this.statusLine += char
       }
     } else if (this.current === this.WAITING_STATUS_LINE_END) {
@@ -121,7 +136,7 @@ class ResponseParser {
         this.current = this.WAITING_HEADER_VALUE
       }
     } else if (this.current === this.WAITING_HEADER_VALUE) {
-      if (char === '\n') {
+      if (char === '\r') {
         this.current = this.WAITING_HEADER_LINE_END
         this.headers[this.headerName] = this.headerValue
         this.headerName = ''
@@ -176,9 +191,13 @@ class ThunkBodyParser {
         this.current = this.WAITING_NEW_LINE
       }
     } else if (this.current === this.WAITING_NEW_LINE) {
-      
+      if (char == '\r') {
+        this.current = this.WAITING_LENGTH_LINE_END
+      }
     } else if (this.current === this.WAITING_NEW_LINE_END) {
-      
+      if (char === '\n') {
+        this.current = this.WAITING_NEW_LINE_END
+      }
     }
   }
 }

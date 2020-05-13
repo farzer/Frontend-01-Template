@@ -42,9 +42,10 @@ test=1&&go=2         # body: 请求体
 响应报文如下：
 
 ```cmd
-POST / HTTP/1.1      # request line：包含 请求方法、请求路径、请求协议
+HTTP/1.1 200 OK      # request line：包含 请求方法、请求路径、请求协议
 HOST: 127.0.0.1      # headers: key:value 的形式
 Content-Type: application/json
                      # 空行，重要！！！
-test=1&&go=2         # body: 请求体
+ok                   # body: 请求体
+0
 ```
