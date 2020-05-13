@@ -42,10 +42,12 @@ test=1&&go=2         # body: 请求体
 响应报文如下：
 
 ```cmd
-HTTP/1.1 200 OK      # request line：包含 请求方法、请求路径、请求协议
-HOST: 127.0.0.1      # headers: key:value 的形式
-Content-Type: application/json
-                     # 空行，重要！！！
-ok                   # body: 请求体
-0
+HTTP/1.1 200 OK                     # request line：包含 请求方法、请求路径、请求协议
+Context-Type: text/html             # headers: key:value 的形式
+Date: Mon, 23 Dec 2019 06:46:19 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+                                    # 空行，重要！！！
+ok                                  # body: 请求体
+0                                   # 0 结束
 ```

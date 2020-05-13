@@ -49,6 +49,9 @@ ${this.bodyText}`
       })
       
       connection.on('data', (data) => {
+        console.log('收到响应报文：\n')
+        console.log(data.toString())
+        console.log('\n')
         parser.receive(data.toString())
         // resolve(data.toString())
         if (parser.isFinished) {
@@ -100,7 +103,7 @@ class ResponseParser {
     return {
       statusCode: RegExp.$1,
       statusText: RegExp.$2,
-      headers: this.headers
+      headers: this.headers,
       body: this.bodyParser.content.join('')
     }
   }
@@ -145,13 +148,15 @@ class ResponseParser {
         this.headerValue += char
       }
     } else if (this.current === this.WAITING_HEADER_LINE_END) {
-      if (char === ' ') {
+      if (char === '\n') {
         this.current = this.WAITING_HEADER_NAME
       }
-    } else if (this.current === this.) {
-
-    } else if(this.current === this.WAITING_BODY) {
-      this.bodyParser.receiveChar(char)
+    } else if (this.current === this.WAITING_HEADER_BLOCK_END) {
+      if (char === '\n') {
+        this.current = this.WAITING_BODY
+      }
+    } else if (this.current === this.WAITING_BODY) {
+      this.bodyParser && this.bodyParser.receiveChar(char)
     }
   }
 }
