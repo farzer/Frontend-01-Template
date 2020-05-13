@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    let a = 0.1;
+    let b = 0.2;
+    const memory = new Float64Array(1)
+    memory[0] = a;
+    const intArr = new Uint8Array(memory.buffer)
+    console.log(intArr)
+    for (let index = 0; index < 8; index++) {
+      let s = intArr[i].toString(2)
+      console.log(new Array(9 - s.length).join('0') + s);
+      
+      
+    }
+  </script>
+</body>
+</html>
