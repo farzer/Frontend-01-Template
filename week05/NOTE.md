@@ -48,6 +48,7 @@ Date: Mon, 23 Dec 2019 06:46:19 GMT
 Connection: keep-alive
 Transfer-Encoding: chunked
                                     # 空行，重要！！！
+2                                   # 表示后面有多少个字符
 ok                                  # body: 请求体
-0                                   # 0 结束
+0                                   # 0 表示body结束字符
 ```

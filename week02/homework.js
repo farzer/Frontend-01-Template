@@ -1,7 +1,16 @@
-const abstractNumberTest = (reg: RegExp) => (num: string | number) => reg.test(`${num}`)
+/**
+ * 
+ * @param {RegExp} reg 
+ */
+const abstractNumberTest = (reg) => (num) => reg.test(`${num}`)
 
 // 1. 写一个正则表达式 匹配所有 Number 直接量
-function numberTest(testNum: string| number, bit?: 2 | 8 | 10 | 16) {
+/**
+ * 
+ * @param {string| number} testNum 
+ * @param {2 | 8 | 10 | 16} bit 
+ */
+function numberTest(testNum, bit) {
   const decimalReg = /^([-+]?\.?(0|([1-9][0-9]*)))((\.?\d*)|((\.\d+)?[eE][+-]?\d*)?)$/;
   const binaryReg = /^0[bB][01]+$/
   const octalReg = /^0[Oo][0-7]+$/
@@ -45,7 +54,8 @@ function utf8encode(str) {
     const utf8Str = []
     // ASCII 码直接转 16
     if (point <= 0x7F) {
-      utf8Str.push(point.toString(16))
+      const obStr = point.toString(2)
+      utf8Str.push(obStr)
     } else { // 大于 127
       // 大端表示法表示码点
       let obStr = point.toString(2)
@@ -82,8 +92,11 @@ function utf8encode(str) {
   return tmp.reduce((prev, currv) => prev + currv.join(''), '')
 }
 
-// 3. 写一个正则表达式，匹配所有的字符串直接量，单引号和双引号
-function stringLiteralTest(str: string) {
+/**
+ * 3. 写一个正则表达式，匹配所有的字符串直接量，单引号和双引号
+ * @param {string} str 
+ */
+function stringLiteralTest(str) {
   const reg = /^(((\'[^\']+((\\'))*?[^\']+\')+)|((\"[^\"]+((\\"))*?[^\"]+\")+))$/
   return abstractNumberTest(reg)(str)
 }

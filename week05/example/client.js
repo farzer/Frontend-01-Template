@@ -37,39 +37,34 @@ ${this.bodyText}`
       const parser = new ResponseParser()
       if (connection) {
         connection.write(this.toString())
-        return;
+      } else {
+        connection = net.createConnection({
+          host: '127.0.0.1',
+          port: 8188,
+        }, () => {
+          console.log('connect to server\n')
+          connection.write(this.toString())
+        })
+        
+        // buffer 满了 或者 响应的数据结束
+        connection.on('data', (data) => {
+          parser.receive(data.toString())
+          // resolve(data.toString())
+          if (parser.isFinished) {
+            resolve(parser.response)
+          }
+          connection.end();
+        })
+        
+        connection.on('end', () => {
+          console.log('disconnect from server')
+        })
+        
+        connection.on('error', (err) => {
+          reject(err)
+          connection.end()
+        })
       }
-  
-      connection = net.createConnection({
-        host: '127.0.0.1',
-        port: 8188,
-      }, () => {
-        console.log('connect to server\n')
-        connection.write(this.toString())
-      })
-      
-      connection.on('data', (data) => {
-        console.log('收到响应报文：\n')
-        console.log(data.toString())
-        console.log('\n')
-        parser.receive(data.toString())
-        // resolve(data.toString())
-        if (parser.isFinished) {
-          resolve(parser.response)
-        }
-        console.log(parser.statusLine)
-        console.log(parser.headers)
-        connection.end();
-      })
-      
-      connection.on('end', () => {
-        console.log('disconnect from server')
-      })
-      
-      connection.on('error', (err) => {
-        reject(err)
-        connection.end()
-      })
     })
     
   }
@@ -108,6 +103,7 @@ class ResponseParser {
     }
   }
   receive(str) {
+    console.log(str)
     for (let index = 0; index < str.length; index++) {
       this.receiveChar(str.charAt(index))
     }
@@ -178,6 +174,7 @@ class ThunkBodyParser {
     if (this.current === this.WAITING_LENGTH) {
       if (char === '\r') {
         if (this.length === 0) {
+          console.log('????????')
           this.isFinished = true
         }
         this.current = this.WAITING_LENGTH_LINE_END
@@ -190,6 +187,7 @@ class ThunkBodyParser {
         this.current = this.READING_THUNK
       }
     } else if (this.current === this.READING_THUNK) {
+      console.log(char, '>>>>>>')
       this.content.push(char)
       this.length--;
       if (this.length === 0) {
@@ -201,7 +199,7 @@ class ThunkBodyParser {
       }
     } else if (this.current === this.WAITING_NEW_LINE_END) {
       if (char === '\n') {
-        this.current = this.WAITING_NEW_LINE_END
+        this.current = this.WAITING_LENGTH
       }
     }
   }

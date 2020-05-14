@@ -6,19 +6,20 @@
   <title>Document</title>
 </head>
 <body>
+  <div>
+    <textarea id="input" style="width: 600px; height: 300px"></textarea>
+    <div id="content" style="margin-top: 24px; width: 600px;word-wrap: break-word;"></div>
+  </div>
+  <script src="./homework.js"></script>
   <script>
-    let a = 0.1;
-    let b = 0.2;
-    const memory = new Float64Array(1)
-    memory[0] = a;
-    const intArr = new Uint8Array(memory.buffer)
-    console.log(intArr)
-    for (let index = 0; index < 8; index++) {
-      let s = intArr[i].toString(2)
-      console.log(new Array(9 - s.length).join('0') + s);
-      
-      
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const i = document.querySelector('#input')
+      i.addEventListener('input', (e) => {
+        const enCode = utf8encode(e.target.value)
+        const c = document.querySelector('#content')
+        c.innerHTML = enCode
+      })
+    })
   </script>
 </body>
 </html>
