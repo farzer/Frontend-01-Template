@@ -1,5 +1,5 @@
+require('./server')
 const Request = require('./client')
-const serverStart = require('./server')
 
 async function makeRequest() {
   const req = new Request({
@@ -22,12 +22,17 @@ async function makeRequest() {
 
 describe('HTTP Parser', () => {
   let result = null
-  beforeAll((done) => {
-    makeRequest().then(res => {
-      result = res
-      done()
-    })
+  let server = null
+
+  beforeAll(async (done) => {
+    result = await makeRequest();
+    done()
   })
+
+  afterAll(() => {
+    server.close()
+  })
+
   test('should not be null', () => {
     expect(result).not.toEqual(null)
   })
