@@ -69,6 +69,7 @@ ${this.bodyText}`
     
   }
 }
+
 class Response {}
 
 class ResponseParser {
@@ -103,7 +104,6 @@ class ResponseParser {
     }
   }
   receive(str) {
-    console.log(str)
     for (let index = 0; index < str.length; index++) {
       this.receiveChar(str.charAt(index))
     }
@@ -203,23 +203,23 @@ class ThunkBodyParser {
   }
 }
 
-void async function() {
-  const req = new Request({
-    method: 'POST',
-    host: '127.0.0.1',
-    path: '/',
-    port: 8188,
-    headers: {
-      'X-Type': 'big'
-    },
-    body: {
-      field: 1,
-      test: 2
-    }
-  })
+// void async function() {
+//   const req = new Request({
+//     method: 'POST',
+//     host: '127.0.0.1',
+//     path: '/',
+//     port: 8188,
+//     headers: {
+//       'X-Type': 'big'
+//     },
+//     body: {
+//       field: 1,
+//       test: 2
+//     }
+//   })
   
-  const res = await req.send()
-  console.log('收到返回的数据：', res)
-}()
+//   const res = await req.send()
+//   console.log('收到返回的数据：', res)
+// }()
 
-
+module.exports = Request
