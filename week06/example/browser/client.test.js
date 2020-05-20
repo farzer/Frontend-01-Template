@@ -27,7 +27,7 @@ async function makeRequest() {
   return dom
 }
 
-describe('HTTP browser', () => {
+describe('Browser', () => {
   let result = null
   beforeAll((done) => {
     makeRequest().then(res => {
@@ -35,10 +35,6 @@ describe('HTTP browser', () => {
       done()
     })
   })
-
-  test('should be null', () => {
-    expect(null).toBeNull()
-  });
 
   test('should be null', () => {
     expect(result).toBeNull()
