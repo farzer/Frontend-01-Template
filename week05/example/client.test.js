@@ -21,8 +21,31 @@ async function makeRequest() {
 }
 
 describe('HTTP Parser', () => {
-  test('should get null', () => {
-    expect(null).toEqual(null)
+  let result = null
+  beforeAll((done) => {
+    makeRequest().then(res => {
+      result = res
+      done()
+    })
+  })
+  test('should not be null', () => {
+    expect(result).not.toEqual(null)
+  })
+
+  test('should not be undefined', () => {
+    expect(result).not.toEqual(undefined)
+  })
+
+  test('should be a object', () => {
+    expect(typeof result).toEqual('object')
+  })
+
+  test('should be 200', () => {
+    expect(result.statusCode).toEqual('200')
+  })
+
+  test('should be ok', () => {
+    expect(result.statusText).toEqual('OK')
   })
 });
 

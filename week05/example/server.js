@@ -1,7 +1,6 @@
 const http = require('http')
 
-function bootstrap() {
-  const listenPort = 8188;
+function bootstrap(listenPort = 8188) {
   const listenHost = '127.0.0.1'
 
   return new Promise((resolve) => {
