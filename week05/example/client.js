@@ -174,7 +174,6 @@ class ThunkBodyParser {
     if (this.current === this.WAITING_LENGTH) {
       if (char === '\r') {
         if (this.length === 0) {
-          console.log('????????')
           this.isFinished = true
         }
         this.current = this.WAITING_LENGTH_LINE_END
@@ -187,7 +186,6 @@ class ThunkBodyParser {
         this.current = this.READING_THUNK
       }
     } else if (this.current === this.READING_THUNK) {
-      console.log(char, '>>>>>>')
       this.content.push(char)
       this.length--;
       if (this.length === 0) {
