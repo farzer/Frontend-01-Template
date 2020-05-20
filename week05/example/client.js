@@ -26,8 +26,13 @@ class Request {
   }
 
   toString() {
+    //  return `POST /HTTP/1.1\r
+    //  Content-Type:application/x-www-form-urlencoded\r
+    //  Content-Length:22\r
+    //  \r
+    //  name=xxx`;
     return `${this.method} ${this.path} HTTP/1.1\r
-${Object.keys(this.headers).map(key => `${key}: ${this.headers[key]}`).join('\r\n')}
+${Object.keys(this.headers).map(key => `${key} : ${this.headers[key]}`).join('\r\n')}\r
 \r
 ${this.bodyText}`
   }
@@ -39,26 +44,22 @@ ${this.bodyText}`
         connection.write(this.toString())
       } else {
         connection = net.createConnection({
-          host: '127.0.0.1',
-          port: 8188,
+          host: this.host,
+          port: this.port
         }, () => {
-          console.log('connect to server\n')
           connection.write(this.toString())
         })
-        
+
+        // 收到服务端的包，data是一个二进制流
         // buffer 满了 或者 响应的数据结束
         connection.on('data', (data) => {
           parser.receive(data.toString())
-          // resolve(data.toString())
+          // resolve(data.toString());
           if (parser.isFinished) {
             resolve(parser.response)
           }
           connection.end();
-        })
-        
-        connection.on('end', () => {
-          console.log('disconnect from server')
-        })
+        });
         
         connection.on('error', (err) => {
           reject(err)
@@ -66,11 +67,8 @@ ${this.bodyText}`
         })
       }
     })
-    
   }
 }
-
-class Response {}
 
 class ResponseParser {
   constructor() {
@@ -88,14 +86,14 @@ class ResponseParser {
     this.headers = {}
     this.headerName = ''
     this.headerValue = ''
-    this.bodyParser = null;
+    this.bodyParser = null
   }
 
   get isFinished() {
     return this.bodyParser && this.bodyParser.isFinished
   }
   get response() {
-    this.statusLine.match(/HTTP\/1\.1 ([0-9]+) ([\s\S]+)/)
+    this.statusLine.match(/HTTP\/1.1 ([0-9]+) ([\s\S]+)/)
     return {
       statusCode: RegExp.$1,
       statusText: RegExp.$2,
@@ -112,7 +110,7 @@ class ResponseParser {
     if (this.current === this.WAITING_STATUS_LINE) {
       if (char === '\r') {
         this.current = this.WAITING_STATUS_LINE_END
-      }  else {
+      } else {
         this.statusLine += char
       }
     } else if (this.current === this.WAITING_STATUS_LINE_END) {
@@ -125,7 +123,7 @@ class ResponseParser {
       } else if (char === '\r') {
         this.current = this.WAITING_HEADER_BLOCK_END
         if (this.headers['Transfer-Encoding'] === 'chunked') {
-          this.bodyParser = new ThunkBodyParser()
+          this.bodyParser = new TrunkedBodyParser()
         }
       } else {
         this.headerName += char;
@@ -156,15 +154,14 @@ class ResponseParser {
     }
   }
 }
-
-class ThunkBodyParser {
+class TrunkedBodyParser {
   constructor() {
     this.WAITING_LENGTH = 0
     this.WAITING_LENGTH_LINE_END = 1
-    this.READING_THUNK = 2
+    this.READING_TRUNK = 2
     this.WAITING_NEW_LINE = 3
     this.WAITING_NEW_LINE_END = 4
-    this.isFinished = false;
+    this.isFinished = false
     this.length = 0
     this.content = []
 
@@ -183,17 +180,17 @@ class ThunkBodyParser {
       }
     } else if (this.current === this.WAITING_LENGTH_LINE_END) {
       if (char === '\n') {
-        this.current = this.READING_THUNK
+        this.current = this.READING_TRUNK
       }
-    } else if (this.current === this.READING_THUNK) {
+    } else if (this.current === this.READING_TRUNK) {
       this.content.push(char)
       this.length--;
       if (this.length === 0) {
         this.current = this.WAITING_NEW_LINE
       }
     } else if (this.current === this.WAITING_NEW_LINE) {
-      if (char == '\r') {
-        this.current = this.WAITING_LENGTH_LINE_END
+      if (char === '\r') {
+        this.current = this.WAITING_NEW_LINE_END
       }
     } else if (this.current === this.WAITING_NEW_LINE_END) {
       if (char === '\n') {
@@ -202,24 +199,5 @@ class ThunkBodyParser {
     }
   }
 }
-
-// void async function() {
-//   const req = new Request({
-//     method: 'POST',
-//     host: '127.0.0.1',
-//     path: '/',
-//     port: 8188,
-//     headers: {
-//       'X-Type': 'big'
-//     },
-//     body: {
-//       field: 1,
-//       test: 2
-//     }
-//   })
-  
-//   const res = await req.send()
-//   console.log('收到返回的数据：', res)
-// }()
 
 module.exports = Request
