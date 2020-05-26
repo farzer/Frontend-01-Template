@@ -98,3 +98,7 @@ const ast = css.parse('body { font-size: 12px; }')
 
 - 根据选择器的类型和元素属性，计算是否与当前元素匹配
 - 仅实现三种选择器（元素、id、类），实际还要实现复合选择器
+
+### 第六步 生成 computed 属性
+
+- 一旦匹配就应用到选择器上，形成computedStyle
