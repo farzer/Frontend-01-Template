@@ -65,3 +65,14 @@ while(input) {
 - 多个文本节点需要合并
 
 ## CSS Computing
+
+```js
+const css = require('css')
+const ast = css.parse('body { font-size: 12px; }')
+```
+
+### 第一步 收集 CSS 规则
+
+- 遇到 style 标签时，把 css 规则保存起来
+- 调用 css parser 来分析解析 css 规则
+- 需要分析 css 库对 css 规则的解析格式
