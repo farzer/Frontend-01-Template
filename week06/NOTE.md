@@ -76,3 +76,9 @@ const ast = css.parse('body { font-size: 12px; }')
 - 遇到 style 标签时，把 css 规则保存起来
 - 调用 css parser 来分析解析 css 规则
 - 需要分析 css 库对 css 规则的解析格式
+
+### 第二部 调用 css 规则
+
+- 当我们创建一个元素的时候，要立即计算 css
+- 理论上，当我们分析一个元素的时候，所有的 css 规则已经收集完毕
+- 在真实浏览器中，可能会遇到写在body中的 style 标签，需要重新计算 css 的情况，在本案例中忽略
