@@ -1,15 +1,37 @@
 const http = require('http')
+const net = require('net')
 
 const listenPort = 8188;
 const listenHost = '127.0.0.1'
 
-const server = http.createServer((req, res) => {
-  res.setHeader('Content-Type', 'text/html')
-  res.setHeader('X-Foo', 'bar')
-  res.writeHead(200, {
-    'Content-Type': 'text/plain'
+function portIsOccupied(port){
+  const server = net.createServer().listen(port)
+  return new Promise((resolve) => {
+    server.on('listening', () => {
+      server.close()
+      resolve(false)
+    })
+
+    server.on('error', err => {
+      if (err.code === 'EADDRINUSE') {
+        resolve(true)
+      }
+    })
   })
-  res.end(`<html maaa=a >
+}
+
+void async function () {
+  const isOccupied = await portIsOccupied(listenPort)
+  if (isOccupied) {
+    return
+  }
+  const server = http.createServer((req, res) => {
+    res.setHeader('Content-Type', 'text/html')
+    res.setHeader('X-Foo', 'bar')
+    res.writeHead(200, {
+      'Content-Type': 'text/plain'
+    })
+    res.end(`<html maaa=a >
 <head>
     <style>
 body div #myid{
@@ -29,16 +51,17 @@ body div img{
     </div>
 </body>
 </html>`)
-})
+  })
 
-server.on('connection', () => {
-  console.log('client 连接成功')
-})
+  server.on('connection', () => {
+    console.log('client 连接成功')
+  })
 
-server.on('error', (err) => {
-  console.log('server error: ', err)
-})
+  server.on('error', (err) => {
+    console.log('server error: ', err)
+  })
 
-server.listen(listenPort, listenHost, () => {
-  console.log(`server is starting on http://${listenHost}:${listenPort}`)
-})
+  server.listen(listenPort, listenHost, () => {
+    console.log(`server is starting on http://${listenHost}:${listenPort}`)
+  })
+}()
