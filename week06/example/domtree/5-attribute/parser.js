@@ -31,7 +31,7 @@ function parseHTML(html) {
   function emit(token) {
     tokenArr.push(token)
     if (token.type !== 'text') {
-      console.log(token)
+      // console.log(token)
     }
   }
 

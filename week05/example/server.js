@@ -1,28 +1,13 @@
 const http = require('http')
 const net = require('net')
+const detect = require('detect-port')
 
 const listenPort = 8188;
 const listenHost = '127.0.0.1'
 
-function portIsOccupied(port){
-  const server = net.createServer().listen(port)
-  return new Promise((resolve) => {
-    server.on('listening', () => {
-      server.close()
-      resolve(false)
-    })
-
-    server.on('error', err => {
-      if (err.code === 'EADDRINUSE') {
-        resolve(true)
-      }
-    })
-  })
-}
-
 void async function () {
-  const isOccupied = await portIsOccupied(listenPort)
-  if (isOccupied) {
+  const newPort = await detect(listenPort)
+  if (newPort !== listenPort) {
     return
   }
   const server = http.createServer((req, res) => {
@@ -34,20 +19,26 @@ void async function () {
     res.end(`<html maaa=a >
 <head>
     <style>
-body div #myid{
-    width:100px;
-    background-color: #ff5000;
+#container {
+    width: 500px;
+    width: 100px;
+    background-color: rgb(255, 255, 255);
 }
-body div img{
-    width:30px;
-    background-color: #ff1111;
+#container #myid{
+    width: 200px;
+    height: 100px;
+    background-color: rgb(255, 0, 0);
+}
+#container .c1 {
+  flex: 1;
+  background-color: rgb(0, 255, 0);
 }
     </style>
 </head>
 <body>
-    <div class="sss" disabled='true' >
-        <img id="myid"/>
-        <img />
+    <div id="container">
+        <div id="myid"></div>
+        <div class="c1"></div>
     </div>
 </body>
 </html>`)

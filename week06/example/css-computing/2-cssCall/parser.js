@@ -98,7 +98,7 @@ function parseHTML(html) {
   }
 
   function computeCss(element) {
-    console.log(rules)
+    // console.log(rules)
   }
 
   function data(c) {
