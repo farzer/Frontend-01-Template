@@ -6,7 +6,7 @@ const listenPort = 8188;
 const listenHost = '127.0.0.1'
 
 void async function () {
-  const newPort = await detect (listenPort)
+  const newPort = await detect(listenPort)
   if (newPort !== listenPort) {
     return
   }
