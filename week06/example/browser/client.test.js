@@ -1,4 +1,3 @@
-require('./server')
 const Request = require('./client');
 const parser = require('./parser')
 function makeRequest() {

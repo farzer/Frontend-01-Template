@@ -21,7 +21,7 @@ void async function () {
     <style>
 #container {
     width: 500px;
-    width: 100px;
+    height: 100px;
     background-color: rgb(255, 255, 255);
 }
 #container #myid{

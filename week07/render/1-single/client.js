@@ -19,5 +19,6 @@ void async function() {
 
   const res = await req.send()
 
+  console.log(res.body)
   const { stack } = parser.parseHTML(res.body)
 }()
