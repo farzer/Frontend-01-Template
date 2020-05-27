@@ -74,3 +74,13 @@ flex item可以设置的属性有：`order`, `flex-grow`, `flex-shrink`, `flex-b
 + flex-basis（默认 auto）：定义了在分配多余空间之前，项目占据的主轴空间（main size）。浏览器根据这个属性，计算主轴是否有多余空间。它的默认值为auto，即项目的本来大小。如果设为跟width或height属性一样的值，则项目将占据固定空间。
 + flex（默认 0 1 auto）：是flex-grow, flex-shrink 和 flex-basis的简写，默认值为0 1 auto。后两个属性可选。格式为 `<flex-grow> <flex-shrink> <flex-basis>`
 + align-self（默认auto）：允许单个项目有与其他项目不一样的对齐方式，可覆盖align-items属性。默认值为auto，表示继承父元素的align-items属性，如果没有父元素，则等同于stretch。其他值同 align-items
+
+### 布局思路
+
+#### 第一步 预处理元素的 flex 计算默认样式
+
+#### 第二步 收集元素进行（hang）
+
+1. 分行
+  - 根据主轴尺寸（mainSize），把元素分进行
+  - 若设置 no-wrap，则强行分配进第一行
