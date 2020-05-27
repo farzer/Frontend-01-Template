@@ -1,4 +1,4 @@
-const Request = require('../../week05/example/client')
+const Request = require('../../../week05/example/client')
 const parser = require('./parser')
 
 void async function() {
