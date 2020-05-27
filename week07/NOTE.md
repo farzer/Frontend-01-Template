@@ -1,4 +1,4 @@
-## Flex Layout
+## 布局
 
 ### flex 基本概念
 
@@ -94,3 +94,11 @@ flex item可以设置的属性有：`order`, `flex-grow`, `flex-shrink`, `flex-b
 
 - 根据每一行中最大元素尺寸计算行高
 - 根据行高 flex-align 和 item align，确定元素具体位置
+
+## Render
+
+### 第一步 绘制单个元素
+
+- 依赖 images 库
+- 在一个 viewport 上进行
+- 绘制相关属性：background-color、border、background-image
