@@ -9,7 +9,7 @@ function emit(token) {
   // if (token.type !== 'text') {
   //   console.log(token)
   // }
-  console.log(token)
+  // console.log(token)
 }
 
 // state:

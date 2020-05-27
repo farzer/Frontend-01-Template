@@ -205,72 +205,71 @@ function layout(element) {
       itemStyle[mainStart] = currenetMain
       itemStyle[mainEnd] = itemStyle[mainStart] + mainSign * itemStyle[mainSize]
       currentMain = itemStyle[mainEnd]
-    } else { // 多行
-      flexLines.forEach(items => {
-        let mainSpace = items.mainSpace
-        let flexTotal = 0
+    } 
+  } else { // 多行
+    flexLines.forEach(items => {
+      let mainSpace = items.mainSpace
+      let flexTotal = 0
+      for (let index = 0; index < items.length; index++) {
+        const item = items[index];
+        const itemStyle = getStyle(item)
+        if (itemStyle.flex !== null && itemStyle.flex !== void 0) {
+          flexTotal += itemStyle.flex;
+          continue
+        }
+      }
+
+      if (flexTotal > 0) {
+        // 表示有弹性的项目
+        let currentMain = mainBase
         for (let index = 0; index < items.length; index++) {
           const item = items[index];
           const itemStyle = getStyle(item)
-          if (itemStyle.flex !== null && itemStyle.flex !== void 0) {
-            flexTotal += itemStyle.flex;
-            continue
+          if (itemStyle.flex) {
+            itemStyle[mainSize] = (mainSpace / flexTotal) * itemStyle.flex
           }
+          itemStyle[mainStart] = currentMain
+          itemStyle[mainEnd] = itemStyle[mainStart] + mainSign * itemStyle[mainSize]
+          currentMain = itemStyle[mainEnd]
+        }
+      } else {
+        let currentMain // 当前元素在主轴的位置
+        let mainGap // 元素间距
+        // 没有 flex 属性
+        if (style.justifyContent === 'flex-start') {
+          currentMain = mainBase
+          // 元素间距
+          mainGap = 0
         }
 
-        if (flexTotal > 0) {
-          // 表示有弹性的项目
-          let currentMain = mainBase
-          for (let index = 0; index < items.length; index++) {
-            const item = items[index];
-            const itemStyle = getStyle(item)
-            if (itemStyle.flex) {
-              itemStyle[mainSize] = (mainSpace / flexTotal) * itemStyle.flex
-            }
-            itemStyle[mainStart] = currentMain
-            itemStyle[mainEnd] = itemStyle[mainStart] + mainSign * itemStyle[mainSize]
-            currentMain = itemStyle[mainEnd]
-          }
-        } else {
-          let currentMain // 当前元素在主轴的位置
-          let mainGap // 元素间距
-          // 没有 flex 属性
-          if (style.justifyContent === 'flex-start') {
-            currentMain = mainBase
-            // 元素间距
-            mainGap = 0
-          }
-
-          if (style.justifyContent === 'flex-end') {
-            currentMain = mainSpace * mainSign + mainBase
-            mainGap = 0
-          }
-
-          if (style.justifyContent === 'center') {
-            currentMain = mainSpace / 2 * mainSign + mainBase
-            mainGap = 0
-          }
-
-          if (style.justifyContent === 'space-between') {
-            mainGap = mainSpace / (items.length - 1) * mainSign
-            currentMain = mainBase
-          }
-
-          if (style.justifyContent === 'space-around') {
-            mainGap = mainSpace / items.length * mainSign
-            currentMain = mainGap / 2 + mainBase
-          }
-
-          for (let index = 0; index < items.length; index++) {
-            const item = items[index];
-            itemStyle[mainStart] = currentMain
-            itemStyle[mainEnd] = itemStyle[mainStart] + mainSign * itemStyle[mainSize]
-            currentMain = itemStyle[mainEnd] + mainGap
-          }
+        if (style.justifyContent === 'flex-end') {
+          currentMain = mainSpace * mainSign + mainBase
+          mainGap = 0
         }
-      })
 
-    }
+        if (style.justifyContent === 'center') {
+          currentMain = mainSpace / 2 * mainSign + mainBase
+          mainGap = 0
+        }
+
+        if (style.justifyContent === 'space-between') {
+          mainGap = mainSpace / (items.length - 1) * mainSign
+          currentMain = mainBase
+        }
+
+        if (style.justifyContent === 'space-around') {
+          mainGap = mainSpace / items.length * mainSign
+          currentMain = mainGap / 2 + mainBase
+        }
+
+        for (let index = 0; index < items.length; index++) {
+          const item = items[index];
+          itemStyle[mainStart] = currentMain
+          itemStyle[mainEnd] = itemStyle[mainStart] + mainSign * itemStyle[mainSize]
+          currentMain = itemStyle[mainEnd] + mainGap
+        }
+      }
+    })
   }
 
   // 第四步 计算交叉轴
@@ -362,7 +361,7 @@ function layout(element) {
         // TODO
         itemStyle[crossEnd] = crossBase + crossSign * (itemStyle[crossSize] !== null && itemStyle[crossSize] !== void 0
           ? itemStyle[crossSize]
-          : 0)
+          : lineCrossSize)
         itemStyle[crossSize] = crossSign * (itemStyle[crossEnd] - itemStyle[crossStart])
       }
     }

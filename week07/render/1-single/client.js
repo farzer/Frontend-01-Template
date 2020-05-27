@@ -1,5 +1,5 @@
-const Request = require('../../../week05/example/client')
-const parser = require('./parser')
+const Request = require('../../../week05/example/client.js')
+const parser = require('./parser.js')
 
 void async function() {
   const req = new Request({
@@ -19,5 +19,5 @@ void async function() {
 
   const res = await req.send()
 
-  parser.parseHTML(res.body)
+  const { stack } = parser.parseHTML(res.body)
 }()

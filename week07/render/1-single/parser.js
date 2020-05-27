@@ -220,7 +220,7 @@ function parseHTML(html) {
             computedStyle[declaration.property].specificity = sp
           }
         }
-        console.log(element.computedStyle);
+        // console.log(element.computedStyle);
       }
     }
   }
@@ -496,9 +496,7 @@ function parseHTML(html) {
 
   state = state(EOF)
 
-  console.log(stack)
-
-  return {state, tokenArr, rules};
+  return {state, tokenArr, rules, stack};
 }
 
 module.exports.parseHTML = parseHTML
