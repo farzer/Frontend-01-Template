@@ -116,7 +116,7 @@ function parseHTML(html) {
     // id
     if (selector.charAt(0) === '#') {
       const attr = element.attributes.filter(attr => attr.name === 'id')[0]
-      if (attr && attr.value === selector.replace('.', '')) {
+      if (attr && attr.value === selector.replace('#', '')) {
         return true
       }
     } else if (selector.charAt(0) === '.') { // 类名
