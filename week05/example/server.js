@@ -13,16 +13,15 @@ void async function () {
   const server = http.createServer((req, res) => {
     res.setHeader('Content-Type', 'text/html')
     res.setHeader('X-Foo', 'bar')
-    res.writeHead(200, {
-      'Content-Type': 'text/plain'
-    })
+    res.writeHead(200)
     res.end(`<html maaa=a >
 <head>
     <style>
 #container {
+    display: flex;
     width: 500px;
-    height: 100px;
-    background-color: rgb(255, 255, 255);
+    height: 300px;
+    background-color: rgb(0, 0, 0);
 }
 #container #myid{
     width: 200px;

@@ -38,7 +38,7 @@ describe('HTTP Parser', () => {
   })
 
   test('should not be undefined', () => {
-    expect(result).not.toEqual(undefined)
+    expect(result).not.toEqual(void 0)
   })
 
   test('should be a object', () => {
