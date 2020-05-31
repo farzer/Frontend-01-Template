@@ -1,5 +1,8 @@
 const Request = require('../../../week05/example/client.js')
 const parser = require('./parser.js')
+const render = require('./render')
+const images = require('images')
+const path = require('path')
 
 void async function() {
   const req = new Request({
@@ -19,6 +22,8 @@ void async function() {
 
   const res = await req.send()
 
-  console.log(res.body)
   const { stack } = parser.parseHTML(res.body)
+  let viewport = images(800, 600)
+  render(viewport, stack[0])
+  viewport.save(path.join(__dirname, 'viewport.jpg'))
 }()

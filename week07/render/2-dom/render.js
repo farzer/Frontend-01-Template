@@ -7,8 +7,12 @@ function render(viewport, element) {
     if (element.style['background-color']) {
       const color = element.style['background-color'] || 'rgb(0,0,0)'
       color.match(/rgb\((\d+),[ ]*(\d+),[ ]*(\d+)\)/)
-      img.fill(Number(RegExp.$1), Number(RegExp.$2), Number(RegExp.$3))
-      viewport.draw(img, element.style.left || 0, element.style.right || 0, element.style.top, element.style.bottom)
+      const r = Number(RegExp.$1)
+      const g = Number(RegExp.$2)
+      const b = Number(RegExp.$3)
+      img.fill(r, g, b)
+      const { left = 0, top = 0 } = element.style
+      viewport.draw(img, left, top)
     }
   }
 
@@ -18,3 +22,5 @@ function render(viewport, element) {
     }
   }
 }
+
+module.exports = render

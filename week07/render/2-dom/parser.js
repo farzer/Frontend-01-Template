@@ -52,6 +52,7 @@ function parseHTML(html) {
         }
       }
 
+      // 计算 css
       computeCss(element)
 
       top.children.push(element)
@@ -203,7 +204,7 @@ function parseHTML(html) {
       }
 
       if (matched) {
-        // 计算 sp
+        // 计算 样式优先级
         const sp = specificity(rule.selectors[0])
         // 如果匹配到
         const computedStyle = element.computedStyle
