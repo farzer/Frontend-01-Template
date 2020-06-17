@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="a">
+    <span>1</span>
+    <p>2</p>
+    <a>3</a>
+    <div>4</div>
+  </div>
+  <script>
+    let element = document.getElementById('a')
+
+    for (let index = 0; index < element.childNodes.length; index++) {
+      const child = element.childNodes[element.childNodes.length - 1 - index]
+      element.appendChild(child)
+    }
+  </script>
+</body>
+</html>

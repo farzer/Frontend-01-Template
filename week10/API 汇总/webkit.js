@@ -1,0 +1,15 @@
+const webkit = [
+'webkitRTCPeerConnection',
+'webkitMediaStream',
+'webkitURL',
+'webkitRequestAnimationFrame',
+'webkitCancelAnimationFrame',
+'webkitStorageInfo',
+'webkitSpeechGrammar',
+'webkitSpeechGrammarList',
+'webkitSpeechRecognition',
+'webkitSpeechRecognitionError',
+'webkitSpeechRecognitionEvent',
+'webkitRequestFileSystem',
+'webkitResolveLocalFileSystemURL',
+]

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .row {
+        display: flex;
+        height: 120px;
+        margin-bottom: 2px;
+      }
+      .col {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 120px;
+        height: 120px;
+        cursor: pointer;
+        margin-right: 2px;
+        background-color: lightgreen;
+        font-size: 80px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="root">
+      <div class="desktop"></div>
+    </div>
+    <script>
+      const COUNT = 3;
+      const EMPTY = 0;
+      const PLAYER1 = 1;
+      const PLAYER2 = 2;
+      let pattern = new Array(COUNT * COUNT).fill(EMPTY);
+      // 随机当前玩家
+      let NEXT_PLAYER = 1 + Math.floor(Math.random() * 2);
+
+      // 轮换对手
+      const exchangePlayer = () => {
+        NEXT_PLAYER = 3 - NEXT_PLAYER;
+      }
+
+      const vmPattern = new Proxy(pattern, {
+        set(target, key, value, receiver) {
+          // 轮换对手
+          exchangePlayer()
+          Reflect.set(target, key, value, receiver);
+          draw();
+          const win = dudge(target, value);
+          if (win) {
+            alert(`player${value} win`);
+          }
+          return true;
+        },
+      });
+
+      function draw() {
+        const root = document.querySelector(".desktop");
+        const content = document.createDocumentFragment();
+        for (let i = 0; i < COUNT; i++) {
+          const row = document.createElement("div");
+          row.className = "row";
+          for (let j = 0; j < COUNT; j++) {
+            const col = document.createElement("div");
+            col.className = "col";
+            const index = i * COUNT + j;
+            col.innerHTML =
+              vmPattern[index] === PLAYER2
+                ? "❌"
+                : vmPattern[index] === PLAYER1
+                ? "⭕️"
+                : "";
+            col.addEventListener("click", () => {
+              chess(index);
+            });
+            row.appendChild(col);
+          }
+          content.appendChild(row);
+        }
+        root.innerHTML = "";
+        root.appendChild(content);
+      }
+
+      function chess(index) {
+        const old = vmPattern[index];
+        if (old !== 0) {
+          return;
+        }
+        vmPattern[index] = NEXT_PLAYER;
+        setTimeout(() => {
+          const res = bestChoice(vmPattern, NEXT_PLAYER)
+          console.log(res)
+        }, 1000)
+      }
+
+      function dudge(board, player) {
+        // 横向判断
+        for (let rowIndex = 0; rowIndex < COUNT; rowIndex++) {
+          let win = true;
+          for (let offset = 0; offset < COUNT; offset++) {
+            const index = rowIndex * COUNT + offset;
+            if (board[index] !== player) {
+              win = false;
+              break;
+            }
+          }
+          if (win) {
+            return true;
+          }
+        }
+
+        // 纵向判断
+        for (let colIndex = 0; colIndex < COUNT; colIndex++) {
+          let win = true;
+          for (let offset = 0; offset < COUNT; offset++) {
+            const index = offset * COUNT + colIndex;
+            if (board[index] !== player) {
+              win = false;
+              break;
+            }
+          }
+          if (win) {
+            return true;
+          }
+        }
+
+        // 正斜线
+        {
+          let win = true;
+          for (let offset = 0; offset < COUNT; offset++) {
+            const index = offset * COUNT + offset;
+            if (board[index] !== player) {
+              win = false;
+              break;
+            }
+          }
+          if (win) {
+            return true;
+          }
+        }
+
+        // 反斜线
+        {
+          let win = true;
+          for (let offset = 0; offset < COUNT; offset++) {
+            const index = offset * COUNT + (COUNT - 1 - offset);
+            if (board[index] !== player) {
+              win = false;
+              break;
+            }
+          }
+          if (win) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      // 判断玩家赢的位置
+      function predict(board, player) {
+        for (let index = 0; index < board.length; index++) {
+          const indexPlayer = board[index];
+          if (indexPlayer !== 0) {
+            continue
+          }
+          const copyBoard = Object.create(board)
+          copyBoard[index] = player
+          const win = dudge(copyBoard, player)
+          if (win) {
+            return index
+          }
+        }
+
+        return null
+      }
+
+      function clone(p) {
+        return JSON.parse(JSON.stringify(p))
+      }
+
+      function bestChoice(board, player) {
+        let index = predict(board, player)
+        if (index) {
+          return {
+            index,
+            result: 1
+          }
+        }
+
+        let result = -1 // -1 输 0 平 1 赢
+
+        for (let tmp = 0; tmp < board.length; tmp++) {
+          if (board[tmp] !== 0) { // 已经下子了的话跳过
+            continue
+          }
+          const copyBoard = clone(board)
+          copyBoard[tmp] = player
+          const opp = bestChoice(copyBoard, 3 - player)
+          if (-opp.result >= result) {
+            index = tmp;
+            result = - opp.result
+          }
+
+          if (result === 1) {
+            break;
+          }
+        }
+
+        return {
+          index,
+          result: index ? result : 0
+        }
+      }
+      // 随机第一个落子位置
+      const initLocation = Math.floor(Math.random() * (pattern.length - 1));
+      vmPattern[initLocation] = NEXT_PLAYER;
+    </script>
+  </body>
+</html>

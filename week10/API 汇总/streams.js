@@ -1,0 +1,15 @@
+const streams = [
+  "ReadableStream",
+  "ReadableStreamDefaultReader",
+  "ReadableStreamBYOBReader",
+  "ReadableStreamDefaultController",
+  "ReadableByteStreamController",
+  "ReadableStreamBYOBRequest",
+  "WritableStream",
+  "WritableStreamDefaultWriter",
+  "WritableStreamDefaultController",
+  "TransformStream",
+  "TransformStreamDefaultController",
+  "ByteLengthQueuingStrategy",
+  "CountQueuingStrategy",
+];
