@@ -36,15 +36,10 @@
       // 随机当前玩家
       let NEXT_PLAYER = 1 + Math.floor(Math.random() * 2);
 
-      // 轮换对手
-      const exchangePlayer = () => {
-        NEXT_PLAYER = 3 - NEXT_PLAYER;
-      }
-
       const vmPattern = new Proxy(pattern, {
         set(target, key, value, receiver) {
           // 轮换对手
-          exchangePlayer()
+          NEXT_PLAYER = 3 - NEXT_PLAYER
           Reflect.set(target, key, value, receiver);
           draw();
           const win = dudge(target, value);
@@ -214,8 +209,8 @@
         }
       }
       // 随机第一个落子位置
-      const initLocation = Math.floor(Math.random() * (pattern.length - 1));
-      vmPattern[initLocation] = NEXT_PLAYER;
+      const initLocation = (pattern.length >> 1)
+      vmPattern[initLocation] = NEXT_PLAYER
     </script>
   </body>
 </html>
