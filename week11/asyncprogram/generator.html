@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    div {
+      background-color: grey;
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+    }
+
+    .green.light {
+      background-color: green;
+    }
+
+    .red.light {
+      background-color: red;
+    }
+
+    .yellow.light {
+      background-color: yellow;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="green"></div>
+  <div class="yellow"></div>
+  <div class="red"></div>
+  <script src="controll.js"></script>
+  <script>
+    function sleep(delay) {
+      return new Promise(function(resolve, reject) {
+        setTimeout(() => {
+          resolve()
+        }, delay);
+      })
+    }
+    function* go() {
+      while (true) {
+        green()
+        yield sleep(3000)
+        yellow()
+        yield sleep(1000)
+        red()
+        yield sleep(2000)
+      }
+    }
+
+    function run(iterator) {
+      let {value, done} = iterator.next()
+      if (done) {
+        return
+      }
+      if (value instanceof Promise) {
+        value.then(function() {
+          run(iterator)
+        })
+      }
+    }
+
+    function co(generator) {
+      return function() {
+        run(generator())
+      }
+    }
+    
+    go = co(go)
+    go()
+  </script>
+</body>
+
+</html>

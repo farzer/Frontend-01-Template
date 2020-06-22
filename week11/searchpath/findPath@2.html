@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .cell {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: grey;
+      border-bottom: solid 1px white;
+      border-right: solid 1px white;
+      vertical-align: middle;
+    }
+    #container {
+      width: 701px;
+      font-size: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <button onclick="localStorage.map = JSON.stringify(map)">Save</button>
+  <button>Clear</button>
+  <script>
+    let mouse = false
+    let clear
+    const map = localStorage.map ? JSON.parse(localStorage.map) : new Array(10000).fill(0);
+    const container = document.getElementById('container')
+    const frame = document.createDocumentFragment()
+    for (let y = 0; y < 100; y++) {
+      for (let x = 0; x < 100; x++) {
+        let cell = document.createElement('div')
+        cell.classList.add('cell')
+        if (map[y * 100 + x] === 1) {
+          cell.style.backgroundColor = 'black'
+        }
+        cell.addEventListener('mouseover', () => {
+          if (mouse) {
+            if (clear) {
+              cell.style.backgroundColor = 'grey'
+              map[y * 100 + x] = 0
+            } else {
+              cell.style.backgroundColor = 'black'
+              map[y * 100 + x] = 1
+            }
+          }
+        })
+        frame.appendChild(cell)
+      }
+    }
+    container.appendChild(frame)
+
+    document.addEventListener('mousedown', (e) => {
+      mouse = true
+      clear = e.which === 3
+    })
+
+    document.addEventListener('mouseup', () => {
+      mouse = false
+    })
+
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+    })
+
+    document.getElementsByTagName('button')[0].addEventListener('click', () => {
+      localStorage.setItem('map', JSON.stringify(map))
+    })
+
+    document.getElementsByTagName('button')[1].addEventListener('click', () => {
+      localStorage.removeItem('map')
+    })
+
+    function sleep(delay) {
+      return new Promise(resolve => setTimeout(resolve, delay))
+    }
+
+    async function findPath(map, start, end) {
+      map = map.slice()
+
+      // 无序队列
+      const queue = [start]
+
+      async function insert([x, y], pre) {
+        // 如果已经占位
+        if (map[100 * y + x] !== 0) {
+          return
+        }
+        // 超出边界
+        if (x < 0 || y < 0 || x >= 100 || y >= 100) {
+          return
+        }
+
+        // 标记搜索点
+        map[100 * y + x] = pre
+        container.children[y * 100 + x].style.backgroundColor = 'lightgreen'
+        await sleep(1)
+        queue.push([x, y])
+      }
+
+      while (queue.length) {
+        // 取出一个元素
+        let [x, y] = queue.shift()
+        if (x === end[0] && y === end[1]) {
+          let path = []
+          let pre = map[y * 100 + x];
+          pre.push(end)
+          container.children[pre[1] * 100 + pre[0]].style.backgroundColor = 'pink'
+          while(pre[0] !== start[0] || pre[1] !== start[1]) {
+            path.push(pre)
+            container.children[pre[1] * 100 + pre[0]].style.backgroundColor = 'pink'
+            pre = map[pre[1] * 100 + pre[0]]
+          }
+          pre.push(start)
+          return path
+        }
+
+        await insert([x - 1, y], [x, y])
+        await insert([x + 1, y], [x, y])
+        await insert([x, y - 1], [x, y])
+        await insert([x, y + 1], [x, y])
+
+        await insert([x - 1, y - 1], [x, y])
+        await insert([x + 1, y - 1], [x, y])
+        await insert([x - 1, y + 1], [x, y])
+        await insert([x + 1, y + 1], [x, y])
+      }
+
+      return null
+    }
+  </script>
+</body>
+</html>

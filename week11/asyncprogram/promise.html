@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    div {
+      background-color: grey;
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+    }
+
+    .green.light {
+      background-color: green;
+    }
+
+    .red.light {
+      background-color: red;
+    }
+
+    .yellow.light {
+      background-color: yellow;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="green"></div>
+  <div class="yellow"></div>
+  <div class="red"></div>
+  <script src="controll.js"></script>
+  <script>
+    function sleep(delay) {
+      return new Promise(function(resolve, reject) {
+        setTimeout(() => {
+          resolve()
+        }, delay);
+      })
+    }
+    function go() {
+      green()
+      sleep(3000).then(function() {
+      yellow()
+        return sleep(2000)
+      }).then(function() {
+        red()
+        return sleep(3000)
+      }).then(go)
+    }
+    
+    go()
+  </script>
+</body>
+
+</html>
