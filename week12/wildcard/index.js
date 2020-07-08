@@ -37,7 +37,9 @@ function find(source, pattern) {
 
       let reg = new RegExp(subPattern.replace(/\?/g, '[\\s\\S]'), 'g')
       reg.lastIndex = lastIndex
-      reg.exec(source)
+      if (!reg.exec(source)) {
+        return false
+      }
       lastIndex = reg.lastIndex
     }
 
