@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>carousel component</title>
+  <style>
+    .carousel {
+      width: 500px;
+      height: 300px;
+      white-space: nowrap;
+      outline: solid 1px blue;
+      /* zoom: 0.5; */
+      margin: auto;
+      overflow: hidden;
+    }
+    .carousel>img {
+      width: 500px;
+      height: 300px;
+      display: inline-block;
+      transition: transform ease 2s;
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <script>
+    let data = [
+      "https://static001.geekbang.org/resource/image/bb/21/bb38fb7c1073eaee1755f81131f11d21.jpg",
+      "https://static001.geekbang.org/resource/image/1b/21/1b809d9a2bdf3ecc481322d7c9223c21.jpg",
+      "https://static001.geekbang.org/resource/image/b6/4f/b6d65b2f12646a9fd6b8cb2b020d754f.jpg",
+      "https://static001.geekbang.org/resource/image/73/e4/730ea9c393def7975deceb48b3eb6fe4.jpg",
+    ];
+
+    class Carousel {
+      constructor() {
+        this.root = null
+        this.data = []
+        this.current = 0
+      }
+      next() {
+        const nextPosition = (this.current + 1) % this.data.length;
+        const currentNode = this.root.childNodes[this.current]
+
+
+        const nextNode = this.root.childNodes[nextPosition]
+
+        currentNode.style.transition = 'ease 0s'
+        nextNode.style.transition = 'ease 0s';
+        currentNode.style.transform = `translateX(${-100 * this.current}%)`
+        nextNode.style.transform = `translateX(${100 - 100 * nextPosition}%)`
+        setTimeout(() => {
+          currentNode.style.transition = ''
+          nextNode.style.transition = '';
+          currentNode.style.transform = `translateX(${-100 - 100* this.current}%)`
+          nextNode.style.transform = `translateX(${-100 * nextPosition}%)`
+
+          this.current = nextPosition
+        }, 16);
+      }
+
+      loop() {
+        this.next()
+        setTimeout(() => {
+          this.loop()
+        }, 3000)
+      }
+      render() {
+        this.root = document.createElement('div')
+        this.root.classList.add('carousel')
+
+        for (const d of this.data) {
+          let element = document.createElement('img')
+          element.src = d
+          element.addEventListener('dragstart', e => e.preventDefault())
+          this.root.appendChild(element)
+        }
+
+        this.root.addEventListener('mousedown', e => {
+          let startX = e.clientX, startY = e.clientY
+          let nextPosition = (this.current + 1) % this.data.length
+          let lastPosition = (this.current - 1 + this.data.length) % this.data.length
+
+          let currentNode = this.root.childNodes[this.current]
+          let lastNode = this.root.childNodes[lastPosition]
+          let nextNode = this.root.childNodes[nextPosition]
+
+          currentNode.style.transition = 'ease 0s'
+          lastNode.style.transition = 'ease 0s'
+          nextNode.style.transition = 'ease 0s'
+
+          currentNode.style.transform = `translateX(${- 500 * this.current}px)`
+          lastNode.style.transform = `translateX(${- 500 - 500 * lastPosition}px)`
+          nextNode.style.transform = `translateX(${500 - 500 * nextPosition}px)`
+
+          let move = event => {
+            currentNode.style.transform = `translateX(${event.clientX - startX- 500 * this.current}px)`
+            lastNode.style.transform = `translateX(${event.clientX - startX- 500 - 500 * lastPosition}px)`
+            nextNode.style.transform = `translateX(${event.clientX - startX + 500 - 500 * nextPosition}px)`
+          }
+          let up = e => {
+            document.removeEventListener('mousemove', move)
+            document.removeEventListener('mouseup', up)
+          }
+          document.addEventListener('mousemove', move)
+          document.addEventListener('mouseup', up)
+        })
+      }
+    }
+
+    let carousel = new Carousel()
+    // update data
+    carousel.data = data;
+    // render
+    carousel.render()
+    document.getElementById('container').appendChild(carousel.root);
+  </script>
+</body>
+</html>
