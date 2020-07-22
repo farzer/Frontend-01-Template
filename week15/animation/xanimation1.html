@@ -1,0 +1,31 @@
+<style>
+  #el {
+    width: 100px;
+    height: 100px;
+    background: cyan;
+  }
+
+  #el2 {
+    width: 100px;
+    height: 100px;
+    background: blue;
+    transition: transform linear .5s;
+  }
+</style>
+<div id="el"></div>
+<div id="el2"></div>
+<script type="module">
+  import {Timeline, Animation} from "./animation1.js";
+  import {cubicBezier} from "./cubicBezier.js";
+
+  let linear = t => t;
+  let ease = cubicBezier(.25,.1,.25,1);
+
+  let el = document.getElementById("el")
+  let tl = new Timeline;
+
+  tl.add(new Animation(el.style, "transform", v => `translateX(${v}px)`, 0, 200, 500, 0, linear))
+
+  tl.start();
+  document.getElementById("el2").style.transform = "translateX(200px)";
+</script>

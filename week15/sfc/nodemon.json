@@ -1,0 +1,6 @@
+{
+  "watch": [
+    "myloader",
+    "webpack.config.js"
+  ]
+}
