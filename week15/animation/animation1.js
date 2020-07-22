@@ -22,7 +22,15 @@ export class Timeline {
   }
 
   pause() {
-    cancelAnimationFrame(this.requestId)
+    this.pauseTime = Date.now()
+    if (this.requestId !== null) {
+      cancelAnimationFrame(this.requestId)
+    }
+  }
+
+  resume() {
+    this.startTime += Date.now() - this.pauseTime;
+    this.tick()
   }
 
   start() {
