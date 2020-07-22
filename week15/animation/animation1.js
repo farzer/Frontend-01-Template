@@ -7,9 +7,9 @@ export class Timeline {
       let t = Date.now() - this.startTime
       let animations = this.animations.filter(ani => !ani.finished)
       for (const animation of this.animations) {
-        let { object, property, start, end, timingFunction, delay, template, duration } = animation
-        let progression = timingFunction((t - delay) / duration)
-        if (t > animation.duration + animation.delay) {
+        let { object, property, start, end, timingFunction, delay, template, duration, startTime } = animation
+        let progression = timingFunction((t - delay - startTime ) / duration)
+        if (t > duration + delay + startTime) {
           progression = 1
           animation.finished = true
         }
@@ -51,8 +51,26 @@ export class Timeline {
     this.tick()
   }
 
-  add(animation) {
+  restart() {
+    if (this.state === 'playing') {
+      this.pause()
+    }
+    this.animations = []
+    this.requestId = null;
+    this.state = 'playing'
+    this.startTime = Date.now()
+    this.pauseTime = null
+    this.tick()
+  }
+
+  add(animation, startTime) {
     this.animations.push(animation)
+    animation.finished = false
+    if (this.state === 'playing') {
+      animation.startTime = startTime !== void 0 ? startTime : Date.now() - this.startTime
+    } else {
+      animation.startTime = startTime !== void 0 ? startTime : 0
+    }
   }
 }
 
