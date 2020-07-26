@@ -1,3 +1,5 @@
+import { enableGesture } from './geshure'
+
 export function create(Cls, attributes, ...children) {
   let o;
   if (typeof Cls === 'string') {
@@ -47,6 +49,14 @@ export class Wrapper {
 
   setAttribute(name, val) {
     this.root.setAttribute(name, val)
+
+    if (name.match(/^on([\s\S]+)$/)) {
+      const eventName = RegExp.$1.replace(/^[\s\S]/, c => c.toLowerCase())
+      this.addEventListener(eventName, val)
+    }
+    if (name === 'enableGesture') {
+      enableGesture(this.root)
+    }
   }
 
   appendChild(child) {
