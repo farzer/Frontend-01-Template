@@ -2,6 +2,7 @@ export class Timeline {
   constructor() {
     this.animations = new Set()
     this.requestId = null
+    this.finishedAnimations = new Set()
     this.addTimes = new Map()
     this.state = 'inited'
     this.tick = () => {
@@ -14,6 +15,7 @@ export class Timeline {
         if (t > duration + delay + addTime) {
           progression = 1
           this.animations.delete(animation)
+          this.finishedAnimations.add(animation)
         }
         let value = animation.valueFromProgression(progression)
         object[property] = template(value)
@@ -61,8 +63,23 @@ export class Timeline {
       this.pause()
     }
     this.animations = new Set()
+    this.finishedAnimations = new Set()
     this.addTimes = new Map()
     this.requestId = null;
+    this.state = 'playing'
+    this.startTime = Date.now()
+    this.pauseTime = null
+    this.tick()
+  }
+
+  restart() {
+    if (this.state === 'playing') {
+      this.pause()
+    }
+    for (const animation of this.finishedAnimations) {
+      this.animations.add(animation)
+    }
+    this.finishedAnimations = new Set()
     this.state = 'playing'
     this.startTime = Date.now()
     this.pauseTime = null
