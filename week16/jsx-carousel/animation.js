@@ -2,11 +2,14 @@ export class Timeline {
   constructor() {
     this.animations = new Set()
     this.requestId = null
+    this.addTimes = new Map()
     this.state = 'inited'
     this.tick = () => {
       let t = Date.now() - this.startTime
       for (const animation of this.animations) {
-        let { object, property, start, end, timingFunction, delay, template, duration, addTime } = animation
+        let { object, property, start, end, timingFunction, delay, template, duration } = animation
+        const addTime = this.addTimes.get(animation)
+
         let progression = timingFunction((t - delay - addTime ) / duration)
         if (t > duration + delay + addTime) {
           progression = 1
@@ -31,6 +34,7 @@ export class Timeline {
     this.pauseTime = Date.now()
     if (this.requestId !== null) {
       cancelAnimationFrame(this.requestId)
+      this.requestId = null
     }
   }
 
@@ -52,11 +56,12 @@ export class Timeline {
     this.tick()
   }
 
-  restart() {
+  reset() {
     if (this.state === 'playing') {
       this.pause()
     }
-    this.animations = []
+    this.animations = new Set()
+    this.addTimes = new Map()
     this.requestId = null;
     this.state = 'playing'
     this.startTime = Date.now()
@@ -67,12 +72,12 @@ export class Timeline {
   add(animation, addTime) {
     this.animations.add(animation)
     if (this.state === 'playing' && this.requestId === null) {
-      this.requestId = requestAnimationFrame(this.tick)
+      this.tick()
     }
     if (this.state === 'playing') {
-      animation.addTime = addTime !== void 0 ? addTime : Date.now() - this.startTime
+      this.addTimes.set(animation, addTime !== void 0 ? addTime : Date.now() - this.startTime)
     } else {
-      animation.addTime = addTime !== void 0 ? addTime : 0
+      this.addTimes.set(animation, addTime !== void 0 ? addTime : 0)
     }
   }
 }
