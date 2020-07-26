@@ -66,10 +66,9 @@ export class Timeline {
     this.finishedAnimations = new Set()
     this.addTimes = new Map()
     this.requestId = null;
-    this.state = 'playing'
     this.startTime = Date.now()
     this.pauseTime = null
-    this.tick()
+    this.state = 'inited'
   }
 
   restart() {
