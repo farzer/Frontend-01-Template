@@ -1,7 +1,23 @@
-<body></body>
+<body>
+  <div id="my" style="transform: translate(0, 0); width: 100px; height: 100px; background-color: lightblue;"></div>
+</body>
 <script src="geshure.js"></script>
 <script>
   window.addEventListener('contextmenu', e => e.preventDefault())
   document.addEventListener('selectstart', e => e.preventDefault())
   document.addEventListener('touchmove', e => e.preventDefault(), { passive: false })
+
+  let x = 0, y = 0;
+  let my = document.getElementById('my')
+  enableGesture(document.body)
+  document.body.addEventListener('pan', (event) => {
+    const e = event.detail
+    my.style.transform = `translate(${x + e.clientX - e.startX}px, ${y + e.clientY - e.startY}px)`
+  })
+
+  document.body.addEventListener('panend', (event) => {
+    const e = event.detail
+    x = x + e.clientX - e.startX
+    y = y + e.clientY - e.startY
+  })
 </script>
