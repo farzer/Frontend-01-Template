@@ -16,7 +16,7 @@ export class Timeline {
         let value = animation.valueFromProgression(progression)
         object[property] = template(value)
       }
-      if (animations.length) {
+      if (true || animations.length) {
         this.requestId = requestAnimationFrame(this.tick)
       }
     }

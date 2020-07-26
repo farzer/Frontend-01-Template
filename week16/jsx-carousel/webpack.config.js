@@ -2,10 +2,9 @@ const path = require('path')
 
 module.exports = {
   mode: 'development',
-  entry: './index.js',
+  entry: './main.js',
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js'
   },
   module: {
     rules: [
@@ -24,13 +23,6 @@ module.exports = {
               ]
             ]
           }
-        }
-      },
-      {
-        test: /\.view$/,
-        use: {
-          loader: require.resolve('./myloader.js'),
-          options: {}
         }
       }
     ]
