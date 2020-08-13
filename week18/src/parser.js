@@ -20,7 +20,7 @@ function emit(token) {
     element.tagName = token.tagName;
 
     for (let p in token) {
-      if (p != "type" || p != "tagName")
+      if (p != "type" && p != "tagName")
         element.attributes.push({
           name: p,
           value: token[p]
@@ -96,7 +96,7 @@ function tagName(c) {
     return beforeAttributeName;
   } else if (c == "/") {
     return selfClosingStartTag;
-  } else if (c.match(/^[A-Z]$/)) {
+  } else if (c.match(/^[A-Za-z]$/)) {
     currentToken.tagName += c //.toLowerCase();
     return tagName;
   } else if (c == ">") {
@@ -434,7 +434,12 @@ function afterAttributeName(c) {
   }
 }
 
-export function parseHTML(html) {
+module.exports = function parseHTML(html) {
+  stack = [{
+    type: "document",
+    children: []
+  }];
+  currentToken = null
   let state = data;
   for (let c of html) {
     state = state(c);

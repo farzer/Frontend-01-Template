@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "mocha",
-    "coverage": "nyc mocha"
+    "test": "mocha --require @babel/register",
+    "co": "nyc mocha"
   },
   "dependencies": {
     "@babel/preset-env": "^7.11.0",

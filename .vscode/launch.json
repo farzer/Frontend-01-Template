@@ -7,6 +7,24 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Mocha Tests",
+      "cwd": "${workspaceFolder}/week18",
+      "program": "${workspaceFolder}/week18/node_modules/mocha/bin/_mocha",
+      "args": [
+        "${workspaceFolder}/week18/test/**/*.test.js",
+        "--timeout", "999999",
+        "--colors"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "runtimeArgs": [],
+      "internalConsoleOptions": "openOnSessionStart",
+      "sourceMaps": false
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Frontend",
       "skipFiles": [
         "<node_internals>/**"

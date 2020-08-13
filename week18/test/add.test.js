@@ -1,5 +1,5 @@
-import {add} from '../src/add'
-import assert from 'assert'
+const add = require('../src/add')
+const assert = require('assert')
 
 describe('add', () => {
   it('add(3, 4) should be 7', () => {
