@@ -1,1 +1,9 @@
-# 每周总结可以写在这里
+# dev 工具
+
+Server
+- build: webpack babel vue
+- watch: fsevent
+- mock: easymock, anymock
+- http: ws
+
+Client
