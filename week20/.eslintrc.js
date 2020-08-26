@@ -21,6 +21,8 @@ module.exports = {
     'no-used-variable': 0,
     'react/react-in-jsx-scope': 0,
     'react/jsx-filename-extension': 0,
+    'max-len': 0,
+    'no-lone-blocks': 0,
   },
   settings: {
     createClass: 'createReactElement',
